@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Maddy Supermart</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f4f4f9;
+        }
+
+        header {
+            background: #4a3aff;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        section {
+            display: none;
+            padding: 1rem;
+        }
+
+        .card {
+            background: white;
+            padding: 2rem;
+            margin: 1rem auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 320px;
+        }
+
+        .card h2 {
+            text-align: center;
+            margin-bottom: 1rem;
+            color: #4a3aff;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(90deg, #4a3aff, #8a64ff);
+            border: none;
+            color: white;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        nav {
+            background: #eee;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav input {
+            width: 50%;
+        }
+
+        /* Slider */
+        .slider {
+            position: relative;
+            overflow: hidden;
+            height: 200px;
+            border-radius: 10px;
+            margin-top: 1rem;
+        }
+
+        .slides {
+            display: flex;
+            transition: transform 0.6s ease;
+        }
+
+        .slides img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        /* Dots */
+        .dots {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+        }
+
+        .dot {
+            height: 12px;
+            width: 12px;
+            border-radius: 50%;
+            background: #ddd;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .dot.active {
+            background: #4a3aff;
+        }
+
+        /* Categories */
+        .categories {
+            display: flex;
+            overflow-x: auto;
+            gap: 1rem;
+            padding: 1rem 0;
+        }
+
+        .cat {
+            flex: 0 0 auto;
+            width: 100px;
+            text-align: center;
+            background: white;
+            padding: 0.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .cat img {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* Products */
+        h2 {
+            margin-top: 2rem;
+            color: #333;
+        }
+
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .product {
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .product img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        /* Popup */
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .popup-content {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .popup-content img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .popup-content h2 {
+            color: #4a3aff;
+            margin-bottom: 10px;
+        }
+
+        .popup-content p {
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #444;
+        }
+
+        .popup-content .close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 22px;
+            cursor: pointer;
+            color: #444;
+            font-weight: bold;
+        }
+
+        .popup-content button {
+            width: auto;
+            padding: 10px 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>Maddy Supermart</header>
+
+    <!-- Popup -->
+    <div class="popup" id="welcomePopup" style="display:none;">
+        <div class="popup-content">
+            <span class="close" onclick="closePopup()">&times;</span>
+            <img src="https://images.unsplash.com/photo-1606788075761-5d56c0d90d4b" alt="Grocery">
+            <h2>Welcome to Maddy Supermart</h2>
+            <p>Your one-stop online grocery shopping destination!</p>
+            <button onclick="closePopup()">Shop Now</button>
+        </div>
+    </div>
+
+    <!-- Register -->
+    <section id="register" style="display:block;">
+        <div class="card">
+            <h2>Create Account</h2>
+            <input type="text" placeholder="Enter username">
+            <input type="email" placeholder="Enter email">
+            <input type="password" placeholder="Enter password">
+            <input type="password" placeholder="Re-enter password">
+            <button onclick="goToLogin()">Register</button>
+        </div>
+    </section>
+
+    <!-- Login -->
+    <section id="login">
+        <div class="card">
+            <h2>Login</h2>
+            <input type="email" placeholder="Enter email">
+            <input type="password" placeholder="Enter password">
+            <button onclick="goToHome()">Login</button>
+        </div>
+    </section>
+
+    <!-- Home -->
+    <section id="home">
+        <nav>
+            <input type="text" id="searchBox" placeholder="Search products..." onkeyup="searchProducts()">
+            <div>
+                <a href="#home">Dashboard</a>
+                <a href="#register" onclick="logout()">Logout</a>
+            </div>
+        </nav>
+
+        <!-- Banner Slider -->
+        <div class="slider">
+            <div class="slides" id="slides">
+                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836" alt="Ad 1">
+                <img src="https://images.unsplash.com/photo-1606787366850-de6330128bfc" alt="Ad 2">
+                <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38" alt="Ad 3">
+                <img src="https://images.unsplash.com/photo-1580910051074-9b6c438f9a94" alt="Ad 4">
+            </div>
+            <div class="dots" id="dots"></div>
+        </div>
+
+        <!-- Categories -->
+        <div class="categories">
+            <div class="cat"><img src="https://images.unsplash.com/photo-1604908554049-56868f64c5c9">
+                <p>Rice</p>
+            </div>
+            <div class="cat"><img src="https://images.unsplash.com/photo-1600086828233-bd6c9adbb9d2">
+                <p>Milk</p>
+            </div>
+            <div class="cat"><img src="https://images.unsplash.com/photo-1604908177554-1e481ab8c7a9">
+                <p>Snacks</p>
+            </div>
+            <div class="cat"><img src="https://images.unsplash.com/photo-1567306226416-28f0efdc88ce">
+                <p>Ice Cream</p>
+            </div>
+            <div class="cat"><img src="https://images.unsplash.com/photo-1585238342022-2a22e3df67fb">
+                <p>Biscuits</p>
+            </div>
+        </div>
+
+        <!-- Products -->
+        <h2>Featured Products</h2>
+        <div class="products" id="productList">
+            <div class="product"><img src="https://images.unsplash.com/photo-1604908554049-56868f64c5c9">
+                <h3>Rice</h3>
+                <p>₹60/kg</p>
+            </div>
+            <div class="product"><img src="https://images.unsplash.com/photo-1600086828233-bd6c9adbb9d2">
+                <h3>Milk</h3>
+                <p>₹30/litre</p>
+            </div>
+            <div class="product"><img src="https://images.unsplash.com/photo-1585238342022-2a22e3df67fb">
+                <h3>Biscuits</h3>
+                <p>₹40/pack</p>
+            </div>
+            <div class="product"><img src="https://images.unsplash.com/photo-1567306226416-28f0efdc88ce">
+                <h3>Fruits</h3>
+                <p>₹80/kg</p>
+            </div>
+            <div class="product"><img src="https://images.unsplash.com/photo-1604908177554-1e481ab8c7a9">
+                <h3>Chips</h3>
+                <p>₹20/pack</p>
+            </div>
+            <div class="product"><img src="https://images.unsplash.com/photo-1623428456766-68f94d79a8d3">
+                <h3>Chocolate Ice Cream</h3>
+                <p>₹120/tub</p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Popup
+        function closePopup() { document.getElementById("welcomePopup").style.display = "none"; }
+        function showPopup() { document.getElementById("welcomePopup").style.display = "flex"; }
+
+        // Navigation
+        function goToLogin() {
+            document.getElementById("register").style.display = "none";
+            document.getElementById("login").style.display = "block";
+        }
+        function goToHome() {
+            document.getElementById("login").style.display = "none";
+            document.getElementById("home").style.display = "block";
+            showPopup();
+        }
+        function logout() {
+            document.getElementById("home").style.display = "none";
+            document.getElementById("register").style.display = "block";
+        }
+
+        // Slider with dots
+        const slides = document.getElementById("slides");
+        const total = slides.children.length;
+        const dotsContainer = document.getElementById("dots");
+        let index = 0;
+
+        // Create dots
+        for (let i = 0; i < total; i++) {
+            let dot = document.createElement("div");
+            dot.classList.add("dot");
+            if (i === 0) dot.classList.add("active");
+            dot.addEventListener("click", () => { goToSlide(i); });
+            dotsContainer.appendChild(dot);
+        }
+        const dots = document.querySelectorAll(".dot");
+
+        function goToSlide(i) {
+            index = i;
+            slides.style.transform = `translateX(-${index * 100}%)`;
+            updateDots();
+        }
+        function updateDots() {
+            dots.forEach((d, idx) => { d.classList.toggle("active", idx === index); });
+        }
+
+        function autoSlide() {
+            index = (index + 1) % total;
+            slides.style.transform = `translateX(-${index * 100}%)`;
+            updateDots();
+        }
+        setInterval(autoSlide, 3000);
+
+        // Search
+        function searchProducts() {
+            let input = document.getElementById("searchBox").value.toLowerCase();
+            let products = document.querySelectorAll("#productList .product");
+            products.forEach(p => {
+                let name = p.querySelector("h3").innerText.toLowerCase();
+                p.style.display = name.includes(input) ? "block" : "none";
+            });
+        }
+    </script>
+
+</body>
+
+</html>
